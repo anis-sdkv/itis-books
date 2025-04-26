@@ -7,6 +7,8 @@ import HomePage from '@/pages/HomePage';
 import MyBooksPage from "@/pages/MyBooksPage";
 import ProfilePage from "@/pages/ProfilePage";
 import BookPage from "@/pages/BookPage";
+import ErrorPage from '@/pages/ErrorPage';
+
 
 
 export default function App() {
@@ -19,8 +21,9 @@ export default function App() {
                         <Route path="/" element={<HomePage/>}/>
                         <Route path="/my-books" element={<MyBooksPage/>}/>
                         <Route path="/profile" element={<ProfilePage/>}/>
-                        <Route path="*" element={<Navigate to="/" replace/>}/>
                         <Route path="/book" element={<BookPage/>}/>
+                
+                        <Route path="*" element={<ErrorPage />} />
                     </Routes>
                 </main>
             </div>
