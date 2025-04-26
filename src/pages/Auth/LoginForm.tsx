@@ -1,18 +1,19 @@
-﻿import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { loginUserSchema, LoginUserDto } from "@/data/dto/LoginUserDto";
-import { loginUser } from "@/data/services/authService";
+﻿import {Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription} from "@/components/ui/card";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Button} from "@/components/ui/button";
+import {Checkbox} from "@/components/ui/checkbox";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {loginUserSchema, LoginUserDto} from "@/data/dto/LoginUserDto";
+import {loginUser} from "@/data/services/authService";
+import ErrorMessage from "./ErrorMessage";
 
 export default function LoginForm() {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: {errors},
         setValue,
         watch,
     } = useForm<LoginUserDto>({
@@ -46,13 +47,15 @@ export default function LoginForm() {
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder="name@example.com"
-                            {...register("email")}
-                        />
-                        {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+                        <div className="relative">
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="name@example.com"
+                                {...register("email")}
+                            />
+                            <ErrorMessage error={errors.email?.message}/>
+                        </div>
                     </div>
 
                     <div className="space-y-2">
@@ -62,13 +65,15 @@ export default function LoginForm() {
                                 Забыли пароль?
                             </a>
                         </div>
-                        <Input
-                            id="password"
-                            type="password"
-                            placeholder="••••••••"
-                            {...register("password")}
-                        />
-                        {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
+                        <div className="relative">
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="••••••••"
+                                {...register("password")}
+                            />
+                            <ErrorMessage error={errors.password?.message}/>
+                        </div>
                     </div>
 
                     <div className="flex items-center space-x-2">

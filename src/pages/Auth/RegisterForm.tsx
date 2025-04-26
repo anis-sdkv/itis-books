@@ -16,6 +16,7 @@ import {Checkbox} from "@/components/ui/checkbox";
 import {Progress} from "@/components/ui/progress";
 import {Alert, AlertDescription} from "@/components/ui/alert";
 import {AlertCircle} from "lucide-react";
+import ErrorMessage from "./ErrorMessage";
 
 export default function MultiStepRegisterForm() {
     const [currentStep, setCurrentStep] = useState(1);
@@ -48,18 +49,6 @@ export default function MultiStepRegisterForm() {
             console.error("Ошибка регистрации:", error);
         }
     };
-
-    const ErrorMessage = ({error}: { error?: string }) => {
-        if (!error) return null;
-        return (
-            <div className="absolute right-0 top-0 flex items-center h-full pr-3">
-                <div className="bg-red-100 text-red-700 text-xs rounded-md px-2 py-1 whitespace-nowrap">
-                    {error}
-                </div>
-            </div>
-        );
-    };
-
 
     return (
         <Card className="w-full max-w-md">
