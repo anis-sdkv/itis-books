@@ -51,7 +51,7 @@ export default function LayoutHeader() {
                         {!user && (
                             <NavigationMenuItem>
                                 <NavigationMenuLink
-                                    href="/login"
+                                    href="/auth/login"
                                     className="px-4 py-2 rounded-lg hover:bg-muted/50 transition">
                                     Войти
                                 </NavigationMenuLink>
