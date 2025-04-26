@@ -10,7 +10,6 @@ import BookPage from "@/pages/BookPage";
 import ErrorPage from '@/pages/ErrorPage';
 
 
-
 export default function App() {
     return (
         <BrowserRouter>
@@ -21,6 +20,8 @@ export default function App() {
                         <Route path="/" element={<HomePage/>}/>
                         <Route path="/my-books" element={<MyBooksPage/>}/>
                         <Route path="/profile" element={<ProfilePage/>}/>
+                        <Route path="/book" element={<BookPage/>}/>
+                        <Route path="/auth/*" element={<AuthPage/>}/>
                         <Route path="/book" element={<BookPage/>}/>
                 
                         <Route path="*" element={<ErrorPage />} />
