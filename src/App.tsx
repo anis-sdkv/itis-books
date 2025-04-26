@@ -1,35 +1,27 @@
 import './App.css'
 
-import { Button } from "@/components/ui/button"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
+import {} from "@/components/ui/navigation-menu"
+import LayoutHeader from "@/shared/LayoutHeader";
+import {Routes, Route, BrowserRouter, Navigate} from "react-router-dom";
+import HomePage from '@/pages/Home';
+import MyBooksPage from "@/pages/MyBooks";
+import ProfilePage from "@/pages/ProfilePage";
 
-function App() {
+
+export default function App() {
     return (
-        <div className="flex flex-col items-center justify-center min-h-svh">
-            <Button>Click me</Button>
-
-            <Dialog>
-                <DialogTrigger>Open</DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Are you absolutely sure?</DialogTitle>
-                        <DialogDescription>
-                            This action cannot be undone. This will permanently delete your account
-                            and remove your data from our servers.
-                        </DialogDescription>
-                    </DialogHeader>
-                </DialogContent>
-            </Dialog>
-        </div>
-    )
+        <BrowserRouter>
+            <div className="min-h-screen flex flex-col">
+                <LayoutHeader/>
+                <main className="flex-1 container mx-auto py-6">
+                    <Routes>
+                        <Route path="/" element={<HomePage/>}/>
+                        <Route path="/my-books" element={<MyBooksPage/>}/>
+                        <Route path="/profile" element={<ProfilePage/>}/>
+                        <Route path="*" element={<Navigate to="/" replace/>}/>
+                    </Routes>
+                </main>
+            </div>
+        </BrowserRouter>
+    );
 }
-
-
-export default App
