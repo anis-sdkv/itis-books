@@ -25,7 +25,6 @@ export default function MultiStepRegisterForm() {
         control,
         handleSubmit,
         formState: {errors},
-        watch,
         trigger
     } = useForm<RegisterUserDto>({
         mode: "onChange",
@@ -49,8 +48,6 @@ export default function MultiStepRegisterForm() {
             console.error("Ошибка регистрации:", error);
         }
     };
-
-    const agreeTerms = watch("agreeTerms");
 
     const ErrorMessage = ({error}: { error?: string }) => {
         if (!error) return null;
