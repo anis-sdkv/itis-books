@@ -9,6 +9,7 @@ import BookPage from "@/pages/BookPage";
 import ErrorPage from '@/pages/ErrorPage';
 import AuthPage from "@/pages/Auth/AuthPage";
 import MainPage from "@/pages/MainPage";
+import CreateShelfPage from "@/pages/CreateShelfPage";
 
 
 export default function App() {
@@ -24,8 +25,8 @@ export default function App() {
                         <Route path="/search" element={<SearchPage />} />
                         <Route path="/book" element={<BookPage/>}/>
                         <Route path="/auth/*" element={<AuthPage/>}/>
-                        <Route path="/book" element={<BookPage/>}/>
                         <Route path="*" element={<ErrorPage/>}/>
+                        <Route path="/my-books/create-shelf" element={<CreateShelfPage/>}/>
                     </Routes>
                 </main>
             </div>
