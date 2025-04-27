@@ -29,6 +29,15 @@ export default function LayoutHeader() {
                             </NavigationMenuLink>
                         </NavigationMenuItem>
 
+                        <NavigationMenuItem>
+                            <NavigationMenuLink
+                                href="/search"
+                                className="px-4 py-2 rounded-lg hover:bg-muted/50 transition">
+                                Поиск
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+
+
                         {user && (
                             <>
                                 <NavigationMenuItem>
@@ -57,6 +66,7 @@ export default function LayoutHeader() {
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
                         )}
+
 
                     </NavigationMenuList>
                 </NavigationMenu>
