@@ -1,3 +1,4 @@
+
 export default function ErrorPage() {
   return (
       <section className="flex flex-col items-center gap-6">
