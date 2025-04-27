@@ -34,6 +34,13 @@ export default function LayoutHeader() {
                         </NavigationMenuItem>
                         <NavigationMenuItem>
                             <NavigationMenuLink
+                                href="/search"
+                                className="px-4 py-2 rounded-lg hover:bg-muted/50 transition">
+                                Поиск
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+                        <NavigationMenuItem>
+                            <NavigationMenuLink
                                 href="/profile"
                                 className="px-4 py-2 rounded-lg hover:bg-muted/50 transition">
                                 Профиль
