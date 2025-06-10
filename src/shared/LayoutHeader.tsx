@@ -4,20 +4,20 @@
     NavigationMenuLink,
     NavigationMenuList
 } from "@/components/ui/navigation-menu";
-import {useAuth} from "@/context/AuthContext";
+import {Link} from "react-router-dom";
+import {useAuth} from "@/context/useAuth";
 
 export default function LayoutHeader() {
-    const {user} = useAuth(); // подключаем auth-контекст
+    const {user} = useAuth();
 
     return (
         <header
             className="border-b bg-white/70 backdrop-blur-sm sticky top-0 z-10">
             <div className="container mx-auto flex items-center justify-between py-3">
 
-                <a href="/"
-                   className="text-2xl font-bold tracking-tight">
+                <Link to="/" className="text-2xl font-bold tracking-tight">
                     ITIS.books
-                </a>
+                </Link>
 
                 <NavigationMenu>
                     <NavigationMenuList>

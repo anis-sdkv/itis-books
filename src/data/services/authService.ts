@@ -1,31 +1,20 @@
-﻿import {API_URL} from '@/config';
-import {User} from '@/data/models/User';
-import {apiClient} from "@/data/apiClient";
-import {RegisterUserDto} from "@/data/dto/RegisterUserDto";
-import {LoginUserDto} from '@/data/dto/LoginUserDto';
+﻿import apiClient from "@/data/apiClient";
+import {RegisterUserRequest} from "@/data/requests/RegisterUserRequest";
+import {LoginUserRequest} from "@/data/requests/LoginUserRequest";
+import {RegisterUserResponse} from "@/data/responses/RegisterUserResponse";
 
-export async function fetchUser(): Promise<User> {
-    const {data} = await apiClient.get<User>(`${API_URL}/me`, {
-        withCredentials: true,
-    });
-    return data;
+export const registerUser = async (credentials: RegisterUserRequest): Promise<RegisterUserResponse> => {
+    const response = await apiClient.post('users/register/', credentials);
+    return response.data;
 }
 
-export async function registerUser(credentials: RegisterUserDto): Promise<void> {
-    await apiClient.post(`${API_URL}/register`, credentials, {
-        withCredentials: true,
-    });
-}
+export const loginUser = async (credentials: LoginUserRequest): Promise<void> => {
+    const {data} = await apiClient.post<{ access: string; refresh: string }>('users/login/', credentials);
+    localStorage.setItem('access_token', data.access);
+    localStorage.setItem('refresh_token', data.refresh);
+};
 
-export async function loginUser(credentials: LoginUserDto): Promise<User> {
-    const {data} = await apiClient.post<User>(`${API_URL}/login`, credentials, {
-        withCredentials: true,
-    });
-    return data;
-}
-
-export async function logoutUser(): Promise<void> {
-    await apiClient.post(`${API_URL}/logout`, {}, {
-        withCredentials: true,
-    });
-}
+export const logout = (): void => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+};

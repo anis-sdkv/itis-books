@@ -5,18 +5,21 @@ import {Button} from "@/components/ui/button";
 import {Checkbox} from "@/components/ui/checkbox";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {loginUserSchema, LoginUserDto} from "@/data/dto/LoginUserDto";
-import {loginUser} from "@/data/services/authService";
+import {loginUserSchema, LoginFormValues} from "@/data/form/LoginFormValues";
 import ErrorMessage from "./ErrorMessage";
+import {toLoginRequest} from "@/data/requests/LoginUserRequest";
+import {useAuth} from "@/context/useAuth";
 
 export default function LoginForm() {
+    const {login} = useAuth();
+
     const {
         register,
         handleSubmit,
         formState: {errors},
         setValue,
         watch,
-    } = useForm<LoginUserDto>({
+    } = useForm<LoginFormValues>({
         resolver: zodResolver(loginUserSchema),
         defaultValues: {
             email: "",
@@ -25,10 +28,10 @@ export default function LoginForm() {
         },
     });
 
-    const onSubmit = async (data: LoginUserDto) => {
+    const onSubmit = async (data: LoginFormValues) => {
         try {
-            const user = await loginUser(data);
-            console.log("Успешный вход пользователя:", user);
+            await login(toLoginRequest(data));
+            console.log("Успешный вход пользователя:");
         } catch (error) {
             console.error("Ошибка входа:", error);
         }

@@ -1,6 +1,7 @@
 ﻿import {z} from 'zod';
 
 export const registerUserSchema = z.object({
+    username: z.string().optional(),
     email: z.string().email('Некорректный email'),
     password: z.string().min(8, 'Пароль минимум 8 символов'),
     confirmPassword: z.string().min(8, 'Пароль минимум 8 символов'),
@@ -14,4 +15,4 @@ export const registerUserSchema = z.object({
     path: ["confirmPassword"],
 });
 
-export type RegisterUserDto = z.infer<typeof registerUserSchema>;
+export type RegisterFormValues = z.infer<typeof registerUserSchema>;

@@ -2,8 +2,8 @@
 import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 
-import {RegisterUserDto, registerUserSchema} from "@/data/dto/RegisterUserDto";
-import {registerUser} from "@/data/services/authService";
+import {RegisterFormValues, registerUserSchema} from "@/data/form/RegisterFormValues";
+import { registerUser} from "@/data/services/authService";
 
 import {
     Card, CardContent, CardDescription, CardFooter,
@@ -17,8 +17,32 @@ import {Progress} from "@/components/ui/progress";
 import {Alert, AlertDescription} from "@/components/ui/alert";
 import {AlertCircle} from "lucide-react";
 import ErrorMessage from "./ErrorMessage";
+import {RegisterUserRequest} from "@/data/requests/RegisterUserRequest";
+import {updateProfile} from "@/data/services/profileSerivece";
+import {UpdateProfileRequest} from "@/data/requests/UpdateProfileRequest";
+import {useNavigate} from "react-router-dom";
+import {toLoginRequest} from "@/data/requests/LoginUserRequest";
+import {useAuth} from "@/context/useAuth";
+
+function toRegisterUserRequest(values: RegisterFormValues): RegisterUserRequest {
+    return {
+        username: values.email,//values.username,
+        email: values.email,
+        password: values.password
+    };
+}
+
+function toUpdateProfileRequest(values: RegisterFormValues): UpdateProfileRequest {
+    return {
+        first_name: values.firstName,
+        last_name: values.lastName
+    }
+}
+
 
 export default function MultiStepRegisterForm() {
+    const navigate = useNavigate();
+    const {login} = useAuth();
     const [currentStep, setCurrentStep] = useState(1);
 
     const {
@@ -27,7 +51,7 @@ export default function MultiStepRegisterForm() {
         handleSubmit,
         formState: {errors},
         trigger
-    } = useForm<RegisterUserDto>({
+    } = useForm<RegisterFormValues>({
         mode: "onChange",
         resolver: zodResolver(registerUserSchema),
         defaultValues: {
@@ -40,11 +64,16 @@ export default function MultiStepRegisterForm() {
         },
     });
 
-    const onSubmit = async (data: RegisterUserDto) => {
+    const onSubmit = async (data: RegisterFormValues) => {
         try {
-            await registerUser(data);
+            const registerResponse = await registerUser(toRegisterUserRequest(data));
+            console.log(registerResponse);
+            if (!registerResponse) throw new Error("Регистрация не удалась");
+            await login(toLoginRequest(data));
+            await updateProfile(toUpdateProfileRequest(data));
+            console.log("Registration and profile update successful!");
+            navigate('/profile');
             console.log("Registration successful!");
-            // TODO: перенаправление после регистрации
         } catch (error) {
             console.error("Ошибка регистрации:", error);
         }
