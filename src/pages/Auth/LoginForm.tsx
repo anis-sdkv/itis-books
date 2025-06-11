@@ -9,9 +9,15 @@ import {loginUserSchema, LoginFormValues} from "@/data/form/LoginFormValues";
 import ErrorMessage from "./ErrorMessage";
 import {toLoginRequest} from "@/data/requests/LoginUserRequest";
 import {useAuth} from "@/context/useAuth";
+import {useNavigate} from "react-router-dom";
+import {AxiosError} from "axios";
+import {useState} from "react";
 
 export default function LoginForm() {
     const {login} = useAuth();
+    const navigate = useNavigate();
+    const [submitError, setSubmitError] = useState<string>("");
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const {
         register,
@@ -19,6 +25,7 @@ export default function LoginForm() {
         formState: {errors},
         setValue,
         watch,
+        clearErrors,
     } = useForm<LoginFormValues>({
         resolver: zodResolver(loginUserSchema),
         defaultValues: {
@@ -29,11 +36,51 @@ export default function LoginForm() {
     });
 
     const onSubmit = async (data: LoginFormValues) => {
+        setIsLoading(true);
+        setSubmitError("");
+        clearErrors();
+
         try {
             await login(toLoginRequest(data));
-            console.log("Успешный вход пользователя:");
+            console.log("Успешный вход пользователя");
+            navigate("/profile");
         } catch (error) {
-            console.error("Ошибка входа:", error);
+            if (error instanceof AxiosError) {
+                if (error.response) {
+                    const status = error.response.status;
+                    const errorData = error.response.data;
+
+                    switch (status) {
+                        case 401:
+                            // Неверные учетные данные
+                            setSubmitError("Неверный email или пароль");
+                            break;
+                        case 422:
+                            setSubmitError("Некорректные данные");
+                            break;
+                        case 429:
+                            setSubmitError("Слишком много попыток входа. Попробуйте позже");
+                            break;
+                        case 500:
+                        case 502:
+                        case 503:
+                            setSubmitError("Ошибка сервера. Попробуйте позже");
+                            break;
+                        default:
+                            setSubmitError(errorData?.message || "Произошла ошибка при входе");
+                    }
+                } else if (error.request) {
+                    // Сетевая ошибка
+                    setSubmitError("Проблемы с сетевым подключением");
+                } else {
+                    // Другие ошибки
+                    setSubmitError("Неизвестная ошибка");
+                }
+            } else {
+                setSubmitError("Произошла неожиданная ошибка");
+            }
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -48,6 +95,13 @@ export default function LoginForm() {
 
             <CardContent>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                    {/* Общая ошибка отправки формы */}
+                    {submitError && (
+                        <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+                            {submitError}
+                        </div>
+                    )}
+
                     <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
                         <div className="relative">
@@ -56,6 +110,7 @@ export default function LoginForm() {
                                 type="email"
                                 placeholder="name@example.com"
                                 {...register("email")}
+                                disabled={isLoading}
                             />
                             <ErrorMessage error={errors.email?.message}/>
                         </div>
@@ -74,6 +129,7 @@ export default function LoginForm() {
                                 type="password"
                                 placeholder="••••••••"
                                 {...register("password")}
+                                disabled={isLoading}
                             />
                             <ErrorMessage error={errors.password?.message}/>
                         </div>
@@ -84,6 +140,7 @@ export default function LoginForm() {
                             id="remember"
                             checked={rememberMe}
                             onCheckedChange={(checked) => setValue("rememberMe", !!checked)}
+                            disabled={isLoading}
                         />
                         <label
                             htmlFor="remember"
@@ -93,8 +150,8 @@ export default function LoginForm() {
                         </label>
                     </div>
 
-                    <Button type="submit" className="w-full">
-                        Войти
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                        {isLoading ? "Вход..." : "Войти"}
                     </Button>
                 </form>
             </CardContent>

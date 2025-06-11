@@ -1,13 +1,13 @@
 ﻿import {useEffect, useState} from 'react';
-import {User} from "@/data/models/User";
+import {UserModel} from "@/data/models/UserModel";
 import {AuthContext} from "@/context/AuthContext";
-import {fetchProfile} from "@/data/services/profileSerivece";
-import {loginUser, logout} from "@/data/services/authService";
 import {LoginUserRequest} from "@/data/requests/LoginUserRequest";
-
+import {UpdateProfileRequest} from "@/data/requests/UpdateProfileRequest";
+import {authService} from "@/data/services/AuthService";
+import {profileService} from "@/data/services/ProfileSerivece";
 
 export function AuthProvider({children}: { children: React.ReactNode }) {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<UserModel | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -18,12 +18,12 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
                 return;
             }
             try {
-                const userData = await fetchProfile();
+                const userData = await profileService.fetchProfile();
                 setUser(userData);
             } catch (error) {
-                console.error("Ошибка при проверке сессии:", error);
+                console.log(error);
                 localStorage.removeItem("access_token");
-                localStorage.removeItem("refresh_token");
+                setUser(null);
             } finally {
                 setLoading(false);
             }
@@ -33,19 +33,45 @@ export function AuthProvider({children}: { children: React.ReactNode }) {
     const login = async (data: LoginUserRequest) => {
         setLoading(true);
         try {
-            await loginUser(data);
-            const userData = await fetchProfile();
+            await authService.loginUser(data);
+            const userData = await profileService.fetchProfile();
             setUser(userData);
         } catch (error) {
-            console.log(error)
+            console.log(error);
+            throw error;
         } finally {
             setLoading(false);
         }
     };
 
+    const updateProfile = async (data: UpdateProfileRequest) => {
+        setLoading(true);
+        try {
+            const userData = await profileService.updateProfile(data);
+            setUser(userData);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const logout = async () => {
+        setLoading(true);
+        try {
+            authService.logout();
+        } catch (error) {
+            console.log(error);
+            throw error;
+        } finally {
+            setUser(null);
+            setLoading(false);
+        }
+    };
 
     return (
-        <AuthContext.Provider value={{user, loading, login, logout}}>
+        <AuthContext.Provider value={{user, loading, login, updateProfile, logout}}>
             {children}
         </AuthContext.Provider>
     );

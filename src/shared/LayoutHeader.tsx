@@ -33,9 +33,9 @@ export default function LayoutHeader() {
                             <>
                                 <NavigationMenuItem>
                                     <NavigationMenuLink
-                                        href="/my-books"
+                                        href="/my-library"
                                         className="px-4 py-2 rounded-lg hover:bg-muted/50 transition">
-                                        Мои книги
+                                        Моя библиотека
                                     </NavigationMenuLink>
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
